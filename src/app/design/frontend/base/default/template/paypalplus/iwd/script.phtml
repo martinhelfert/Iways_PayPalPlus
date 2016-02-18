@@ -1,0 +1,7 @@
+<script type="text/javascript">
+    IWD.OPC.Plugin.event('saveOrderBefore', function() {
+        if(payment.currentMethod == 'iways_paypalplus_payment') {
+            window.ppp.doCheckout();
+        }
+    });
+</script>

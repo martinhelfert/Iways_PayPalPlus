@@ -1,0 +1,9 @@
+{
+   "name": "iways/paypalplus",
+   "type": "magento-module",
+   "description": "PayPal Plus Payment",
+   "homepage": "https://store.i-ways.net/",
+   "require": {
+      "magento-hackathon/magento-composer-installer": "*"
+   }
+}
