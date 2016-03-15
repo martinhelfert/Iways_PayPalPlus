@@ -5,3 +5,4 @@ src/app/etc/modules/Iways_PayPalPlus.xml app/etc/modules/Iways_PayPalPlus.xml
 src/lib/PayPal/* lib/PayPal
 src/skin/frontend/base/default/css/iways-paypalplus.css skin/frontend/base/default/css/iways-paypalplus.css
 src/skin/frontend/base/default/images/iways/* skin/frontend/base/default/images/iways
+src/app/locale/de_DE/Iways_PayPalPlus.csv app/locale/de_DE/Iways_PayPalPlus.csv
