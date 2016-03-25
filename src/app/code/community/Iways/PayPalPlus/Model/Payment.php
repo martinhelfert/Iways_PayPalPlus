@@ -29,6 +29,9 @@ class Iways_PayPalPlus_Model_Payment extends Mage_Payment_Model_Method_Abstract
 {
     const PPP_STATUS_APPROVED = 'approved';
     const METHOD_CODE = 'iways_paypalplus_payment';
+    const PENDING = 'pending';
+
+    const PPP_PUI_INSTRUCTION_TYPE = 'PAY_UPON_INVOICE';
 
     protected $_code = self::METHOD_CODE;
     protected $_formBlockType = 'iways_paypalplus/payment_form';
@@ -45,9 +48,8 @@ class Iways_PayPalPlus_Model_Payment extends Mage_Payment_Model_Method_Abstract
     protected $_canCapturePartial = false;
     protected $_canCaptureOnce = false;
     protected $_canRefund = true;
-    protected $_canRefundInvoicePartial = false;
+    protected $_canRefundInvoicePartial = true;
     protected $_canUseCheckout = true;
-
 
 
     /**
@@ -120,14 +122,19 @@ class Iways_PayPalPlus_Model_Payment extends Mage_Payment_Model_Method_Abstract
             if($transactions && isset($transactions[0])) {
                 $resource = $transactions[0]->getRelatedResources();
                 if($resource && isset($resource[0])) {
-                    $transactionId = $resource[0]->getSale()->getId();
+                    $sale = $resource[0]->getSale();
+                    $transactionId = $sale->getId();
+                    if($sale->getState() == self::PENDING) {
+                        $payment->setIsTransactionPending(true);
+                    }
                 }
             }
 
         } catch (Exception $e) {
-            $transactionId = $payment->getId();
+            $transactionId = $ppPayment->getId();
         }
         $payment->setTransactionId($transactionId);
+        $payment->setParentTransactionId($ppPayment->getId());
 
         if($ppPayment->getState() == self::PPP_STATUS_APPROVED) {
             $payment->setStatus(self::STATUS_APPROVED);
@@ -162,10 +169,21 @@ class Iways_PayPalPlus_Model_Payment extends Mage_Payment_Model_Method_Abstract
      */
     protected function _getParentTransactionId(Varien_Object $payment)
     {
-        $transaction = Mage::getModel('sales/order_payment_transaction')->load($payment->getLastTransId(), 'txn_id');
+        return $this->_getLastParentTransactionId($payment->getLastTransId());
+    }
+
+
+    /**
+     * Retrieves the  last parent transaction id without a transaction (PayPal Pay-Id)
+     *
+     * @param $transactionId
+     * @return mixed
+     */
+    protected function _getLastParentTransactionId($transactionId) {
+        $transaction = Mage::getModel('sales/order_payment_transaction')->load($transactionId, 'txn_id');
         if($transaction && $transaction->getParentTxnId()) {
-            return $transaction->getParentTxnId();
+            return $this->_getLastParentTransactionId($transaction->getParentTxnId());
         }
-        return $payment->getLastTransId();
+        return $transactionId;
     }
 }

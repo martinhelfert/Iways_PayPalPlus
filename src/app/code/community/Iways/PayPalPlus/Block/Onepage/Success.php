@@ -50,8 +50,9 @@ class Iways_PayPalPlus_Block_Onepage_Success extends Mage_Checkout_Block_Onepage
      * Check if last order is PayPalPlus
      * @return bool
      */
-    public function isPPP() {
-        if($this->_order->getPayment()->getMethodInstance()->getCode() == Iways_PayPalPlus_Model_Payment::METHOD_CODE) {
+    public function isPPP()
+    {
+        if ($this->_order->getPayment()->getMethodInstance()->getCode() == Iways_PayPalPlus_Model_Payment::METHOD_CODE) {
             return true;
         }
         return false;
@@ -64,7 +65,23 @@ class Iways_PayPalPlus_Block_Onepage_Success extends Mage_Checkout_Block_Onepage
      */
     public function isPUI()
     {
-        return ($this->isPPP() && $this->_order->getPayment()->getData('ppp_pui_reference_number')) ? true: false;
+        return (
+            $this->isPPP()
+            && (
+                $this->_order->getPayment()->getData('ppp_pui_instruction_type')
+                == Iways_PayPalPlus_Model_Payment::PPP_PUI_INSTRUCTION_TYPE
+            )
+        ) ? true : false;
+    }
+
+    /**
+     * Checks if order is PayPal Plus and has payment instructions
+     *
+     * @return bool
+     */
+    public function hasPaymentInstruction()
+    {
+        return ($this->isPPP() && $this->_order->getPayment()->getData('ppp_pui_instruction_type')) ? true : false;
     }
 
     /**

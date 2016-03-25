@@ -81,6 +81,6 @@ class Iways_PayPalPlus_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function isPUI()
     {
-        return ($this->getInfo()->getData('ppp_pui_reference_number')) ? true : false;
+        return ($this->getInfo()->getData('ppp_pui_instruction_type') == Iways_PayPalPlus_Model_Payment::PPP_PUI_INSTRUCTION_TYPE) ? true : false;
     }
 }

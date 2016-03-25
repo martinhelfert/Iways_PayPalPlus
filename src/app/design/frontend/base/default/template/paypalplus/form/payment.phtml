@@ -38,7 +38,7 @@ if ($paymentExperience) :
             document.cookie = 'paypalplus_session=; Path=/checkout; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
             document.cookie = 'paypalplus_session=; Path=/firecheckout; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
             document.cookie = 'paypalplus_session=; Path=/onestepcheckout; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-
+            window.pppId = '<?php echo $this->getPayPalPaymentId(); ?>';
             selectMethod('<?php echo Iways_PayPalPlus_Model_Payment::METHOD_CODE; ?>');
             window.ppp = PAYPAL.apps.PPP(
                 {
@@ -49,6 +49,9 @@ if ($paymentExperience) :
                     buttonLocation:"outside",
                     <?php if($this->isPuiSandboxMode()) : ?>
                     showPuiOnSandbox: true,
+                    <?php endif; ?>
+                    <?php if($this->showLoadingIndicator()) : ?>
+                    showLoadingIndicator: true,
                     <?php endif; ?>
                     country:"<?php echo $this->getCountryId(); ?>",
                     language:"<?php echo $this->getLanguage(); ?>",

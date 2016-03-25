@@ -310,4 +310,22 @@ class Iways_PayPalPlus_Block_Payment_Form extends Mage_Payment_Block_Form
         return Mage::getStoreConfig('iways_paypalplus/dev/pui_sandbox');
     }
 
+    /**
+     * Should show loading indicator?
+     * @return mixed
+     */
+    public function  showLoadingIndicator()
+    {
+        return Mage::getStoreConfig('payment/iways_paypalplus_payment/show_loading_indicator');
+    }
+
+    /**
+     * Get current PayPal payment id
+     *
+     * @return mixed
+     */
+    public function getPayPalPaymentId() {
+        return Mage::getSingleton('customer/session')->getPayPalPaymentId();
+    }
+
 }

@@ -1027,7 +1027,7 @@ Event.observe(window, 'load', function() {
                             submitelement.parentNode.appendChild(loaderelement);
                             if (payment.currentMethod == 'iways_paypalplus_payment') {
                                 var form = $('onestepcheckout-form');
-                                new Ajax.Request('<?php echo Mage::helper('iways_paypalplus')->getUrl('paypalplus/index/patch'); ?>', {
+                                new Ajax.Request('<?php echo Mage::helper('iways_paypalplus')->getUrl('paypalplus/index/patch'); ?>'+'pppId/'+window.pppId, {
                                     method: 'post',
                                     parameters: form.serialize(),
                                     onSuccess: function (transport) {

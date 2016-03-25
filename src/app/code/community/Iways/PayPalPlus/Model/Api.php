@@ -52,6 +52,9 @@ class Iways_PayPalPlus_Model_Api
      */
     const WEBHOOK_URL_ALREADY_EXISTS = 'WEBHOOK_URL_ALREADY_EXISTS';
 
+    const PATCH_ADD = 'add';
+    const PATCH_REPLACE = 'replace';
+
     /**
      * @var null|ApiContext
      */
@@ -198,9 +201,9 @@ class Iways_PayPalPlus_Model_Api
 
             $transactions = $payment->getTransactions();
             if ($transactions[0]->getItemList()->getShippingAddress() === null) {
-                $addressMode = 'add';
+                $addressMode = self::PATCH_ADD;
             } else {
-                $addressMode = 'replace';
+                $addressMode = self::PATCH_REPLACE;
             }
             $shippingAddress = $this->buildShippingAddress($quote);
             $addressPatch = new Patch();
@@ -211,10 +214,17 @@ class Iways_PayPalPlus_Model_Api
 
             $payerInfo = $this->buildBillingAddress($quote);
             $payerInfoPatch = new Patch();
-            $payerInfoPatch->setOp('add');
+            $payerInfoPatch->setOp(self::PATCH_ADD);
             $payerInfoPatch->setPath('/potential_payer_info/billing_address');
             $payerInfoPatch->setValue($payerInfo);
             $patchRequest->addPatch($payerInfoPatch);
+
+            $amount = $this->buildAmount($quote);
+            $amountPatch = new Patch();
+            $amountPatch->setOp(self::PATCH_REPLACE);
+            $amountPatch->setPath('/transactions/0/amount');
+            $amountPatch->setValue($amount);
+            $patchRequest->addPatch($amountPatch);
 
             $response = $payment->update(
                 $patchRequest,
@@ -382,7 +392,7 @@ class Iways_PayPalPlus_Model_Api
         } catch (PayPal\Exception\PayPalConnectionException $ex) {
             if ($ex->getData()) {
                 $data = Mage::helper('core')->jsonDecode($ex->getData());
-                if ($data['name'] == self::WEBHOOK_URL_ALREADY_EXISTS) {
+                if (isset($data['name']) && $data['name'] == self::WEBHOOK_URL_ALREADY_EXISTS) {
                     return true;
                 }
             }
@@ -460,7 +470,6 @@ class Iways_PayPalPlus_Model_Api
             }
             $shippingAddress->{$setter}($value);
         }
-
         return $shippingAddress;
     }
 

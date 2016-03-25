@@ -1,3 +1,16 @@
+==== 1.7.0 ====
+Update PayPal Rest SDK to 1.6.4
+Fixed parent transaction id
+Fixed wrong PayPal payment id in Idev_OSC
+Added partial refund
+Show payment instructions for manual banktransfer payments on order success page
+Added totals to patchPayment
+Possible MagentoConnect File->directory fix
+
+==== 1.6.2 ====
+Enable/disable loading indicator for PayPal Plus iframe
+Fixed order status if PayPal payment is still pending (Now payment_review until Webhooks approves payment)
+
 ==== 1.6.1 ====
 Fixed suspected fraud for different currency
 Changed payment method title for germany in frontend

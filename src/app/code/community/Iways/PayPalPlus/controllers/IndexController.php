@@ -114,6 +114,9 @@ class Iways_PayPalPlus_IndexController extends Mage_Checkout_Controller_Action
                 return;
             }
             if (Mage::helper('iways_paypalplus')->isIdevOsc()) {
+                if($this->getRequest()->getParam('pppId')) {
+                    Mage::getSingleton('customer/session')->setPayPalPaymentId($this->getRequest()->getParam('pppId'));
+                }
                 /* Save Idev_Onestepcheckout POST Data to Quote */
                 $this->getLayout()->createBlock('Iways_PayPalPlus_Block_Idev_Checkout',
                     'iways_paypalplus_handle_post_block');
@@ -174,7 +177,9 @@ class Iways_PayPalPlus_IndexController extends Mage_Checkout_Controller_Action
             /** @var \PayPal\Api\WebhookEvent $webhookEvent */
             $webhookEvent =
                 Mage::getSingleton('iways_paypalplus/api')->validateWebhook($this->getRequest()->getRawBody());
-
+            if(!$webhookEvent) {
+                Mage::throwException('Event not found.');
+            }
             Mage::getModel('iways_paypalplus/webhook_event')->processWebhookRequest($webhookEvent);
         } catch (Exception $e) {
             Mage::logException($e);

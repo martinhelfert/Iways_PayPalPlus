@@ -25,7 +25,7 @@
  * @package    Iways_PayPalPlus
  * @author robert
  */
-class Iways_PayPalPlus_Block_Adminhtml_System_Config_Fieldset_Payment_Thirdparty_Info
+class Iways_PayPalPlus_Block_Adminhtml_System_Config_Thirdpartyinfo
     extends Mage_Paypal_Block_Adminhtml_System_Config_Fieldset_Expanded
 {
     /**
